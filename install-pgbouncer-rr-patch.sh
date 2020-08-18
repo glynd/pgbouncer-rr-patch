@@ -58,9 +58,11 @@ NEWFILES="\
    src/pycall.c\
    src/rewrite_query.c\
    src/route_connection.c\
+   src/fastrouter.c\
    include/pycall.h\
    include/rewrite_query.h\
    include/route_connection.h\
+   include/fastrouter.h\
    "
 echo -n "copying pgbouncer-rr files: "
 for file in $NEWFILES
