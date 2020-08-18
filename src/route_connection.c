@@ -18,6 +18,7 @@ This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS O
 #include <Python.h>
 #include "bouncer.h"
 #include <usual/pgutil.h>
+#include "fastrouter.h"
 
 /* private function prototypes */
 char *call_python_routing_rules(PgSocket *client, char *query_str);
@@ -66,8 +67,15 @@ bool route_client_connection(PgSocket *client, PktHdr *pkt) {
 		return true;
 	}
 
-	dbname = pycall(client, client->auth_user->name, query_str, cf_routing_rules_py_module_file,
-			"routing_rules");
+        /* Check if we are using simple fast routing, instead of python - pass remaining bit of routing module string through */
+        if (strncmp(cf_routing_rules_py_module_file, "fastrouter:", 11) ==  0) {
+                dbname = fastrouter(client, cf_routing_rules_py_module_file+11, client->auth_user->name, query_str);
+        }
+        else {
+                dbname = pycall(client, client->auth_user->name, query_str, cf_routing_rules_py_module_file, "routing_rules");
+        }
+
+
 	if (dbname == NULL) {
 		slog_debug(client, "routing_rules returned 'None' - existing connection preserved");
 		return false;

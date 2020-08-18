@@ -1,6 +1,9 @@
---- pure/Makefile	2020-08-18 14:26:42.000000000 +0100
-+++ new/Makefile	2020-08-18 14:26:49.000000000 +0100
-@@ -21,7 +21,11 @@
+--- ../pgbouncer/Makefile	2020-04-26 15:20:51.655323355 -0400
++++ ./Makefile	2020-04-26 14:54:45.004586868 -0400
+@@ -18,12 +18,15 @@ pgbouncer_SOURCES = \
+ 	src/proto.c \
+ 	src/sbuf.c \
+ 	src/scram.c \
  	src/server.c \
  	src/stats.c \
  	src/system.c \
@@ -8,22 +11,29 @@
 +        src/route_connection.c \
 +        src/rewrite_query.c \
  	src/takeover.c \
-+	src/fastrouter.c \
  	src/util.c \
  	src/varcache.c \
  	src/common/base64.c \
-@@ -47,6 +51,10 @@
+ 	src/common/saslprep.c \
+ 	src/common/scram-common.c \
+@@ -44,36 +47,41 @@ pgbouncer_SOURCES = \
+ 	include/proto.h \
+ 	include/sbuf.h \
+ 	include/scram.h \
  	include/server.h \
  	include/stats.h \
  	include/system.h \
 +        include/pycall.h \
 +        include/route_connection.h \
 +        include/rewrite_query.h \
-+        include/fastrouter.h \
  	include/takeover.h \
  	include/util.h \
  	include/varcache.h \
-@@ -58,19 +66,21 @@
+ 	include/common/base64.h \
+ 	include/common/pg_wchar.h \
+ 	include/common/postgres_compat.h \
+ 	include/common/saslprep.h \
+ 	include/common/scram-common.h \
  	include/common/unicode_norm.h \
  	include/common/unicode_norm_table.h
  
@@ -48,11 +58,17 @@
  
  # files in tgz
  EXTRA_DIST = AUTHORS COPYRIGHT Makefile config.mak.in config.sub config.guess \
-@@ -91,8 +101,10 @@
+ 	     install-sh autogen.sh configure configure.ac \
+ 	     etc/mkauth.py etc/optscan.sh etc/example.debian.init.sh \
+ 	     win32/Makefile \
+@@ -88,14 +96,16 @@ LIBUSUAL_DIST = $(filter-out %/config.h,
+ 		lib/mk/*.mk \
+ 		lib/mk/antimake.mk lib/mk/antimake.txt \
+ 		lib/mk/install-sh lib/mk/std-autogen.sh \
  		lib/README lib/COPYRIGHT \
  		lib/find_modules.sh )))
  
-+python_LDFLAGS = -lpthread -ldl -lutil -lm -lpython2.7 -Xlinker -export-dynamic -lpcre2-8
++python_LDFLAGS = -lpthread -ldl -lutil -lm -lpython2.7 -Xlinker -export-dynamic
  pgbouncer_LDFLAGS := $(TLS_LDFLAGS)
 -pgbouncer_LDADD := $(CARES_LIBS) $(LIBEVENT_LIBS) $(TLS_LIBS) $(LIBS)
 +pgbouncer_LDADD := $(CARES_LIBS) $(LIBEVENT_LIBS) $(TLS_LIBS) $(LIBS) $(python_LDFLAGS)
@@ -60,3 +76,6 @@
  LIBS :=
  
  #
+ # win32
+ #
+ 
